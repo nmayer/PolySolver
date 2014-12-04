@@ -137,7 +137,7 @@ public class PolySolverTopPanel extends JPanel
       private double dtheta;
       
       // timer to recalculate path for animation
-      final private javax.swing.Timer sweeper;
+      final private Timer sweeper;
    
       private int degree;
       private double scale;
@@ -217,11 +217,14 @@ public class PolySolverTopPanel extends JPanel
          super.paintComponent(g);
          setBackground(Color.WHITE);
          
+         Graphics2D g2 = (Graphics2D) g;
+         BasicStroke dash = new BasicStroke(1.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 10.0f, new float[]{10.0f}, 0.0f);
+         BasicStroke solid = new BasicStroke();
+         
          if (coeffs == null)
          {
             return;
          }
-      
       
          double x_min = 0;
          double x_max = 0;
@@ -286,39 +289,48 @@ public class PolySolverTopPanel extends JPanel
          x = getWidth() / 2 + scale * origin[0];
          y = getHeight() / 2 - scale * origin[1];
          
-         g.fillOval((int) x - 2, (int) y - 2, 4, 4);
+         g2.fillOval((int) x - 2, (int) y - 2, 4, 4);
          
          double x2, y2;
+         
          double x_path = x;
          double y_path = y;
+         
          sgn = 1;
          
          for (int i = degree; i >= 0; i -= 2, sgn *= -1)
          {
             x2 = x + sgn * coeffs[i] * scale;
-            g.drawLine((int) x, (int) y, (int) x2, (int) y);
+            g2.drawLine((int) x, (int) y, (int) x2, (int) y);
             if (showPath)
             {
                x_path = x + sgn * path[i] * scale;
-               g.setColor(Color.RED)
-               g.drawLine((int) x, (int) y_path, (int) x_path, (int) y);
+               g2.setColor(Color.RED);
+               g2.setStroke(dash);
+               g2.drawLine((int) x, (int) y_path, (int) x_path, (int) y);
+               g2.setStroke(solid);
+               g2.setColor(Color.BLACK);
             }
             x = x2;
             
             if (i >= 1)
             {
                y2 = y - sgn * coeffs[i-1] * scale;
-               g.drawLine((int) x2, (int) y, (int) x2, (int) y2);
+               g2.drawLine((int) x2, (int) y, (int) x2, (int) y2);
                if (showPath)
                {
+                  g2.setColor(Color.RED);
+                  g2.setStroke(dash);
                   y_path = y - sgn * path[i-1] * scale;
-                  g.drawLine((int) x_path, (int) y, (int) x2, (int) y_path);
+                  g2.drawLine((int) x_path, (int) y, (int) x2, (int) y_path);
+                  g2.setStroke(solid);
+                  g2.setColor(Color.BLACK);
                }
                y = y2;
             }
          }
          
-         g.fillOval((int) x - 2, (int) y - 2, 4, 4);
+         g2.fillOval((int) x - 2, (int) y - 2, 4, 4);
       }
    }
 }
