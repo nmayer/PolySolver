@@ -135,7 +135,7 @@ public class PolySolverTopPanel extends JPanel
                   if (coeffs[degree] == 0)
                   {
                      error.setText("<html><font color='red'>Leading " +
-                     "coefficient must be 0.</font></html>");
+                     "coefficient cannot be 0.</font></html>");
                      polyInputForm.add(error, "south");
                      validate();
                      polyInputForm.repaint();
